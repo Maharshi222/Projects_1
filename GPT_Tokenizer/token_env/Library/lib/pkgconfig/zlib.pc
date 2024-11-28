@@ -1,0 +1,13 @@
+prefix=D:/AshishBhai/Projects/Adrej_Karpathy/Project/GPT_Tokenizer/token_env/Library
+exec_prefix=D:/AshishBhai/Projects/Adrej_Karpathy/Project/GPT_Tokenizer/token_env/Library
+libdir=D:/AshishBhai/Projects/Adrej_Karpathy/Project/GPT_Tokenizer/token_env/Library/lib
+sharedlibdir=D:/AshishBhai/Projects/Adrej_Karpathy/Project/GPT_Tokenizer/token_env/Library/lib
+includedir=D:/AshishBhai/Projects/Adrej_Karpathy/Project/GPT_Tokenizer/token_env/Library/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.13
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}
