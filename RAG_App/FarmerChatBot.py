@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
-
 import streamlit as st
 import pandas as pd
 from langdetect import detect
@@ -18,9 +16,9 @@ import numpy as np
 
 # Azure OpenAI configuration
 openai.api_type = "azure"
-openai.api_base = "https://promptaitest.openai.azure.com/"
-openai.api_version = "2023-05-15"
-openai.api_key = "aa611406c85e464d9d1f6d07ffe99f6c"
+openai.api_base = "################################"
+openai.api_version = "################"
+openai.api_key = "######################################"
 
 # Load CSV file
 csv_file_path = "FarmerAppAdd.csv"
@@ -66,9 +64,9 @@ def query_rag(user_question):
 
 from openai import AzureOpenAI
 client = AzureOpenAI(
-    api_key="aa611406c85e464d9d1f6d07ffe99f6c",  
-    api_version="2024-02-01",
-    azure_endpoint="https://promptaitest.openai.azure.com/"
+    api_key="############################",  
+    api_version="################",
+    azure_endpoint="#####################################"
 )
 
 def rewrite_romanized_text(input_text, language):
@@ -139,29 +137,12 @@ if st.button("Process Query"):
         st.warning("Please enter a valid query.")
 
 
-# In[ ]:
-
-
 # Example usage
 input_text = input("Enter your query: ")
 output_answer = process_query(input_text)
 print("**********************************************************************************************************")
 print(f"Output Answer: {output_answer.lower()}")
 
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
 
 
 
