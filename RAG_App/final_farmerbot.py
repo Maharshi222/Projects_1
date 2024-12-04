@@ -99,9 +99,9 @@ st.sidebar.info(f"Dataset contains **{len(pd.read_csv('FarmerAppAdd.csv'))} Q&A 
 # Constants
 CSV_PATH = "FarmerAppAdd.csv"
 MODEL_NAME = 'all-MiniLM-L6-v2'
-AZURE_API_KEY = "aa611406c85e464d9d1f6d07ffe99f6c"
-AZURE_API_VERSION = "2024-08-01-preview"
-AZURE_ENDPOINT = "https://promptaitest.openai.azure.com/openai/deployments/gpt-4/chat/completions?api-version=2024-02-15-preview"
+AZURE_API_KEY = "###########################"
+AZURE_API_VERSION = "##################"
+AZURE_ENDPOINT = "############################################"
 
 # Load data
 df = pd.read_csv(CSV_PATH)
