@@ -46,12 +46,12 @@ clientembed = AzureOpenAI(
     azure_endpoint=azure_embed_endpoint
 )
 
-# Initialize FAISS indices for "farmer" and "mu" with ID mapping
+# Initialize FAISS indices for "farmer" and "milk_man" with ID mapping
 embedding_dimension = 1536
 faiss_index_farmer = faiss.IndexIDMap2(faiss.IndexFlatL2(embedding_dimension))
-faiss_index_mu = faiss.IndexIDMap2(faiss.IndexFlatL2(embedding_dimension))
+faiss_index_milk_man = faiss.IndexIDMap2(faiss.IndexFlatL2(embedding_dimension))
 
-# Metadata stores for "farmer" and "mu"
+# Metadata stores for "farmer" and "milk_man"
 def load_metadata(file_path):
     if os.path.exists(file_path):
         with open(file_path, "r") as f:
@@ -59,7 +59,7 @@ def load_metadata(file_path):
     return []
 
 metadata_store_farmer = load_metadata("metadata_store_farmer.json")
-metadata_store_mu = load_metadata("metadata_store_mu.json")
+metadata_store_milk_man = load_metadata("metadata_store_milk_man.json")
 
 def save_metadata(metadata, file_path):
     with open(file_path, "w") as f:
@@ -148,22 +148,6 @@ def preprocess_and_vectorize(text, model=azure_embed_model):
             print(f"Error generating embedding for: {combined_text} - Error: {e}")
 
     return embeddings
-
-
-#def preprocess_and_vectorize(text, model=azure_embed_model):
-    # Structured chunks as dictionaries
-  #  structured_chunks = []
- #   for chunk in text.split("\n"):
-#     #   if chunk.startswith("Q:"):
-    #        question = chunk[3:chunk.index("A:")].strip()
-   #         answer = chunk[chunk.index("A:") + 3:].strip()
-  #          structured_chunks.append({"Question": question, "Answer": answer})
- #   chunks = structured_chunks
-#    embeddings = []
-   # for chunk in chunks:
-  #      embedding = clientembed.embeddings.create(input=[chunk], model=model).data[0].embedding
- #       embeddings.append((chunk, np.array(embedding, dtype='float32')))
-#    return embeddings
 
 def translate_to_english(query: str) -> str:
     try:
@@ -299,7 +283,7 @@ def upload_file_farmer():
     except Exception as e:
         return jsonify({"error": "Internal server error", "details": str(e)}), 500
 
-def upload_file_mu():
+def upload_file_milk_man():
     if 'file' not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
 
@@ -309,15 +293,15 @@ def upload_file_mu():
 
         # Remove existing entries from FAISS and metadata store
         existing_chunks = [
-            i for i, meta in enumerate(metadata_store_mu)
+            i for i, meta in enumerate(metadata_store_milk_man)
             if meta["file_name"] == file_name
         ]
         if existing_chunks:
             print(f"File '{file_name}' already exists. Updating...")
             faiss_ids_to_remove = np.array(existing_chunks, dtype='int64')
-            faiss_index_mu.remove_ids(faiss_ids_to_remove)
+            faiss_index_milk_man.remove_ids(faiss_ids_to_remove)
             for idx in sorted(existing_chunks, reverse=True):
-                del metadata_store_mu[idx]
+                del metadata_store_milk_man[idx]
 
         # Extract text and vectorize
         text = extract_text(file)
@@ -330,11 +314,11 @@ def upload_file_mu():
                 "chunk_id": i,
                 "text": chunk
             })
-            faiss_index_mu.add_with_ids(
+            faiss_index_milk_man.add_with_ids(
                 np.array([vector]),
-                np.array([len(metadata_store_mu) - 1])
+                np.array([len(metadata_store_milk_man) - 1])
             )
-        dir_name = "MU App"
+        dir_name = "milk_man App"
         try:
             os.mkdir(dir_name)
             print(f"Directory '{dir_name}' created successfully.")
@@ -349,10 +333,10 @@ def upload_file_mu():
 
 
         # Save updated metadata to file and database
-        json_file_path = os.path.join(dir_name, "metadata_store_mu.json")
-        db_file_path = os.path.join(dir_name, "metadata_store_mu.db")
-        save_metadata(metadata_store_mu, json_file_path)
-        save_metadata_to_db(metadata_store_mu, db_file_path)
+        json_file_path = os.path.join(dir_name, "metadata_store_milk_man.json")
+        db_file_path = os.path.join(dir_name, "metadata_store_milk_man.db")
+        save_metadata(metadata_store_milk_man, json_file_path)
+        save_metadata_to_db(metadata_store_milk_man, db_file_path)
 
 
 
@@ -487,7 +471,7 @@ def chat_farmer():
 #     return jsonify({"response": ai_response})
 
 
-def chat_mu():
+def chat_milk_man():
     data = request.json
     user_message = data.get('message', '')
     if not user_message:
@@ -513,13 +497,13 @@ def chat_mu():
     query_embedding = query_embeddings[0][1]
 
     # Perform FAISS search
-    distances, indices = faiss_index_mu.search(np.array([query_embedding]), k=1)
+    distances, indices = faiss_index_milk_man.search(np.array([query_embedding]), k=1)
 
     # Safeguard: Ensure indices are valid
     valid_docs = [
-        metadata_store_mu[idx]['text']
+        metadata_store_milk_man[idx]['text']
         for idx in indices[0]
-        if 0 <= idx < len(metadata_store_mu)
+        if 0 <= idx < len(metadata_store_milk_man)
     ]
     if not valid_docs:
         return jsonify({"error": "No relevant context found for the query."}), 400
