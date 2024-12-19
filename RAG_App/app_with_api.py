@@ -182,22 +182,11 @@ def generate_answer(question: str, context: str,asked_question: str) -> str:
     Returns:
         str: The generated answer in the requested languages.
     """
-    # # Define the prompt to instruct the model in how to generate the answer
-    # if language == "English":
-    #     additional_prompt = f"Generate the answer in English."
-    # elif language == "Hindi":
-    #     additional_prompt = f"Generate the answer in Pure Hindi with devnagiri script and Romanized Hindi Both."
-    # elif language == "Gujarati":
-    #     additional_prompt = f"Generate the answer in Pure Gujarati and Romanized Gujarati Both."
-    # else:
-    #     additional_prompt = f"Generate the answer in English."
-
     prompt = (
 
         f"Input Question from user: {question}\n\n"
         f"Relevant Context:\n{context}\n\n"
         f'f"Detect the language of:\n{asked_question}\n\n"'
-        f"Generate a concise and accurate response in the detected language of {asked_question}"
         f"You are a data retrieval chatbot. Here is your chain of thought:\n"
         f"1. Read the user input and detect the language: English, Hindi, Gujarati,Romanized Hindi, or Romanized Gujarati. "
         f"2. Analyze the input question and use the relevant context provided.\n"
